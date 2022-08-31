@@ -1,3 +1,4 @@
+require("dotenv").config()
 var encrypt = require ('mongoose-encryption')
 
 module.exports = mongoose => {
@@ -10,8 +11,8 @@ module.exports = mongoose => {
     { timestamps: true }
   );
 
-const secret = "Thisisaverylonglittlesecret.";
-schema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
+
+schema.plugin(encrypt, { secret: process.env.SECRET, encryptedFields: ["password"] });
 
   schema.method("toJSON", function () {
     const { __v, _id, ...object } = this.toObject();
@@ -20,4 +21,4 @@ schema.plugin(encrypt, { secret: secret, encryptedFields: ["password"] });
   });
   const User = mongoose.model("user", schema);
   return User;
-};
+};  
