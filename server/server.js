@@ -1,19 +1,52 @@
 require("dotenv").config()
 const express = require("express");
-const SpotifyWebApiNode = require("spotify-web-api-node");
+const spotifyWebApiNode = require("spotify-web-api-node");
 const cors = require("cors")
 const lyricsFinder = require("lyrics-finder")
 const bodyParser = require("body-parser")
 
-
 const app = express();
+
+var corsOptions = {
+  origin: "http://localhost:8081"
+};
+
+app.use(cors(corsOptions));
+
+app.use(express.json());
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use(express.urlencoded({ extended: true }));
+
+const db = require("./rest-api/models");
+db.mongoose
+  .connect(db.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("Connected to the database!");
+  })
+  .catch(err => {
+    console.log("Cannot connect to the database!", err);
+    process.exit();
+  });
+
+// simple route
+app.get("/", (req, res) => {
+  res.json({ message: "users database" });
+});
+
+require("./rest-api/routes/user.routes")(app);
+
 app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 app.post("/refresh", (req, res) => {
   const refreshToken = req.body.refreshToken
-  const spotifyApi = new SpotifyWebApiNode({
+  const spotifyApi = new spotifyWebApiNode({
     redirectUri: process.env.REDIRECT_URI,
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
@@ -36,7 +69,7 @@ app.post("/refresh", (req, res) => {
 
 app.post("/login", (req, res) => {
   const code = req.body.code
-  const spotifyApi = new SpotifyWebApi({
+  const spotifyApi = new spotifyWebApiNode({
     redirectUri: process.env.REDIRECT_URI,
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
@@ -62,4 +95,9 @@ app.get("/lyrics", async (req, res) => {
   res.json({ lyrics })
 })
 
-app.listen(3000)
+require("./rest-api/routes/user.routes")(app);
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
+});

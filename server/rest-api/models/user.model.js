@@ -21,4 +21,4 @@ module.exports = mongoose => {
   });
   const User = mongoose.model("user", schema);
   return User;
-};  
+}; 
