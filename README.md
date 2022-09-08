@@ -1,5 +1,7 @@
 # JENSENfy-backend
 
+## Create backend project
+
 cd ~
 cd ws
 mkdir edu-backend
@@ -26,4 +28,3 @@ npm install nodemon --save-dev
 npm install jest --save-dev
 npm install jest-runner-groups --save-dev
 code .
-
