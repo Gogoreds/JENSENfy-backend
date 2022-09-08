@@ -4,8 +4,9 @@ const cors = require("cors");
 const lyricsFinder = require("lyrics-finder")
 const bodyParser = require("body-parser")
 const SpotifyWebApiNode = require("spotify-web-api-node");
-
 const app = express();
+const swaggerUi = require('swagger-ui-express'),
+  swaggerDocument = require('./swagger.json');
 
 var corsOptions = {
   origin: "http://localhost:8081"
@@ -94,6 +95,12 @@ app.get("/lyrics", async (req, res) => {
     (await lyricsFinder(req.query.artist, req.query.track)) || "No Lyrics Found"
   res.json({ lyrics })
 })
+
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument)
+);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
