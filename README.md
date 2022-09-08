@@ -1,6 +1,5 @@
 # JENSENfy-backend
 
-
 cd ~
 cd ws
 mkdir edu-backend
