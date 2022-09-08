@@ -139,7 +139,7 @@ console.log(`Server is running on port ${PORT}.`);
  }); 
 ```
 
-## Dockerfile
+## Skapa NodeJS Docker Container
 
 ```
 FROM node:12-alpine
@@ -159,6 +159,32 @@ COPY --chown=node:node . .
 EXPOSE 3000
 
 CMD [ "node", "server.js" ]
+```
+
+## Skapa MongoDb Docker Container
+
+```
+docker run -d --name test-mongodb \
+    -p 27017:27017 \
+    -e MONGO_INITDB_ROOT_USERNAME=root \
+    -e MONGO_INITDB_ROOT_PASSWORD=root \
+    mongo
+docker logs test-mongodb --follow
+
+```
+
+## Skapa MySQL Docker Container
+
+```
+docker run \
+    --name test-mysql \
+    -e MYSQL_ROOT_PASSWORD=root \
+    -e MYSQL_USER=test \
+    -e MYSQL_PASSWORD=test \
+    -e MYSQL_DATABASE=test \
+    -p 3306:3306 \
+    --tmpfs /var/lib/mysql  \
+    -d mysql/mysql-server:latest
 ```
 
 
