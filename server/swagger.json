@@ -9,8 +9,8 @@
       "url": "https://opensource.org/licenses/MIT"
     }
   },
-  "host": "localhost:8000",
-  "basePath": "/",
+  "host": "localhost:8080",
+  "basePath": "/api/users",
   "tags": [
     {
       "name": "Users",
@@ -27,7 +27,7 @@
     "application/json"
   ],
   "paths": {
-    "/addUser": {
+    "/": {
       "post": {
         "tags": [
           "Users"
