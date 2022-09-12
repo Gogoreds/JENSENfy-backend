@@ -1,190 +1,147 @@
-# JENSENfy-backend
+<a name="readme-top"></a>
 
-## Create backend project
+<!-- PROJECT LOGO -->
 
-```
-cd ~
-cd ws
-mkdir edu-backend
-cd edu-backend
-npm init -y
-mv app.js server.js
-touch .env
-touch app.json
-touch Procfile
-touch Dockerfile
-touch request.rest
-mkdir routes
-touch routes/healthcheck.js 
-touch routes/user.js
-mkdir __tests__
-touch ./__tests__/component.js
-touch ./__tests__/unit.js
-npm install express --save
-npm install healthcheck --save
-npm install dotenv --save
-npm install cors --save
-npm install jsonwebtoken --save
-npm install nodemon --save-dev
-npm install jest --save-dev
-npm install jest-runner-groups --save-dev
-code .
-```
+<br />
+<div align="center">
+    <img src="https://iili.io/64kT2p.png" alt="Logo" width="150" height="150">
+  </a>
+<br />
+<br />
+  <h2 align="center">JENSENfy Backend</h2>
+<br />
+  <h3 align="center">
+    An awesome music app created by group IV for Paketering, leverans och uppföljning!
+  </h3>
+</div>
+<br />
 
-## Create backend server
+<!-- TABLE OF CONTENTS -->
 
-```
-require("dotenv").config() 
+<details>
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+      <ul>
+        <li><a href="#built-with">Built With</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#acknowledgments">Acknowledgments</a></li>
+  </ol>
+</details>
 
-const express = require("express"); 
-const spotifyWebApiNode = require("spotify-web-api-node"); 
-const cors = require("cors") 
-const lyricsFinder = require("lyrics-finder")
-const bodyParser = require("body-parser")
+<!-- ABOUT THE PROJECT -->
 
-const app = express(); 
+## About The Project
 
-var corsOptions = { 
-origin: "http://localhost:8081" };  
+<img src="https://iili.io/64LDl9.png" alt="Dashboard" >
 
-app.use(cors(corsOptions)); 
+The purpose of this project is to develope and deploy a music web application in which users are able to search for their favorite music, singer, band or genre and listen to them along with the specific lyrics.
 
-app.use(express.json()); 
+Here's why:
 
-app.use(express.urlencoded({ extended: true })); 
+- Noone likes to listen to music in one tab and look up the lyrics on the other; Unfortunately we dont live in a perfect world and many worldwide famous applications make you do that, still, in 2022, yes I'm looking at you Spotify! 😉
+- Calling several APIs using a single server is something that we as a group have never done before and thought it'd be cool to do so.
+- You should implement DRY principles to the rest of your life
 
-app.use(express.urlencoded({ extended: true })); 
+Of course, no application is perfect, but this one is; At least we did our best!😅
 
-const db = require("./rest-api/models"); 
-db.mongoose 
-.connect(db.url, { 
-useNewUrlParser: true, 
-useUnifiedTopology: true 
-})  
-.then(() => { 
-console.log("Connected to the database!"); 
-})  
-.catch(err => { 
-console.log("Cannot connect to the database!", err); 
-process.exit(); 
- }); 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-// simple route 
-app.get("/", (req, res) => { 
-res.json({ message: "users database" }); 
-}); 
+### Built With
 
-require("./rest-api/routes/user.routes")(app); 
+This section lists the major frameworks/libraries used to bootstrap this project.
 
-app.use(cors()) 
-app.use(bodyParser.json()) 
-app.use(bodyParser.urlencoded({ extended: true })) 
+- [![React][react.js]][react-url]
+- [![Bootstrap][bootstrap.com]][bootstrap-url]
+- [![JQuery][jquery.com]][jquery-url]
 
-app.post("/refresh", (req, res) => { 
-const refreshToken = req.body.refreshToken 
-const spotifyApi = new spotifyWebApiNode({ 
-redirectUri: process.env.REDIRECT_URI, 
-clientId: process.env.CLIENT_ID, 
-clientSecret: process.env.CLIENT_SECRET, 
-refreshToken, 
-})  
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-spotifyApi 
-.refreshAccessToken() 
-.then(data => { 
-res.json({ 
-accessToken: data.body.accessToken, 
-expiresIn: data.body.expiresIn, 
-})  
-})  
-.catch(err => { 
-console.log(err) 
-res.sendStatus(400) 
-})  
-})  
+<!-- GETTING STARTED -->
 
-app.post("/login", (req, res) => { 
-const code = req.body.code 
-const spotifyApi = new spotifyWebApiNode({ 
-redirectUri: process.env.REDIRECT_URI, 
-clientId: process.env.CLIENT_ID, 
-clientSecret: process.env.CLIENT_SECRET, 
-})  
+## Getting Started
 
-spotifyApi 
-.authorizationCodeGrant(code) 
-.then(data => { 
-res.json({ 
-accessToken: data.body.access_token, 
-refreshToken: data.body.refresh_token, 
-expiresIn: data.body.expires_in, 
-})  
-})  
-.catch(err => { 
-res.sendStatus(400) 
-})  
-})  
+Once you have installed the dependencies, you can start by running the following command:
 
-app.get("/lyrics", async (req, res) => { 
-const lyrics = 
-(await lyricsFinder(req.query.artist, req.query.track)) \| "No Lyrics Found" 
-res.json({ lyrics }) 
-})  
-
-require("./rest-api/routes/user.routes")(app); 
-
-const PORT = process.env.PORT \| 8080; 
-app.listen(PORT, () => { 
-console.log(`Server is running on port ${PORT}.`); 
- }); 
+```bash
+npm run devStart
 ```
 
-## Skapa NodeJS Docker Container
+### Installation
 
-```
-FROM node:12-alpine
+1. Get a free API Key at (https://developer.spotify.com)
+2. Clone the repo
+   ```sh
+   git clone https://github.com/Gogoreds/JENSENfy-backend
+   ```
+3. Install NPM packages
+   ```sh
+   npm install
+   ```
+4. Enter your API in `config.js`
+   ```js
+   const API_KEY = "ENTER YOUR API";
+   ```
+5. You might need to install the following dependencies manualy:
+   ```sh
+    npm install --save-dev spotify-web-api-node
+   ```
+   ```sh
+   npm install lyrics-finder
+   ```
+6. Run the following command to start the server:
+   ```sh
+    npm run devStart
+   ```
 
-RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-WORKDIR /home/node/app
+<!-- CONTRIBUTING -->
 
-COPY package*.json ./
+## Contributing
 
-USER node
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-RUN npm install
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
-COPY --chown=node:node . .
+1. Fork the Project
+2. Create your Feature Branch
+3. Commit your Changes
+4. Push to the Branch
+5. Open a Pull Request
 
-EXPOSE 3000
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-CMD [ "node", "server.js" ]
-```
+<!-- CONTACT -->
 
-## Skapa MongoDb Docker Container
+## Contact
 
-```
-docker run -d --name test-mongodb \
-    -p 27017:27017 \
-    -e MONGO_INITDB_ROOT_USERNAME=root \
-    -e MONGO_INITDB_ROOT_PASSWORD=root \
-    mongo
-docker logs test-mongodb --follow
+Mo Arefi - (https://www.linkedin.com/in/mo-arefi/) - m-arefi@live.com
 
-```
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-## Skapa MySQL Docker Container
+<!-- ACKNOWLEDGMENTS -->
 
-```
-docker run \
-    --name test-mysql \
-    -e MYSQL_ROOT_PASSWORD=root \
-    -e MYSQL_USER=test \
-    -e MYSQL_PASSWORD=test \
-    -e MYSQL_DATABASE=test \
-    -p 3306:3306 \
-    --tmpfs /var/lib/mysql  \
-    -d mysql/mysql-server:latest
-```
+## Acknowledgments
 
+Use this space to list resources you find helpful and would like to give credit to. I've included a few of my favorites to kick things off!
 
+- [To Get Your Free API Key](https://developer.spotify.com/)
+- [GitHub Emoji Cheat Sheet](https://www.webpagefx.com/tools/emoji-cheat-sheet)
+- [If You Want To Learn More About Spotify API](https://www.npmjs.com/package/spotify-web-api-node)
+- [Lyrics Finder API](https://www.npmjs.com/package/lyrics-finder)
+- [Swagger Inspiration](https://petstore.swagger.io/)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>

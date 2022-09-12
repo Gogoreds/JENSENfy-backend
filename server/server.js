@@ -1,11 +1,12 @@
 require("dotenv").config()
 const express = require("express");
-const spotifyWebApiNode = require("spotify-web-api-node");
-const cors = require("cors")
+const cors = require("cors");
 const lyricsFinder = require("lyrics-finder")
 const bodyParser = require("body-parser")
-
+const SpotifyWebApiNode = require("spotify-web-api-node");
 const app = express();
+const swaggerUi = require('swagger-ui-express'),
+  swaggerDocument = require('./swagger.json');
 
 var corsOptions = {
   origin: "http://localhost:8081"
@@ -13,13 +14,13 @@ var corsOptions = {
 
 app.use(cors(corsOptions));
 
+// parse requests of content-type - application/json
 app.use(express.json());
 
+// parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
-app.use(express.urlencoded({ extended: true }));
-
-const db = require("./rest-api/models");
+const db = require("./models");
 db.mongoose
   .connect(db.url, {
     useNewUrlParser: true,
@@ -38,7 +39,7 @@ app.get("/", (req, res) => {
   res.json({ message: "users database" });
 });
 
-require("./rest-api/routes/user.routes")(app);
+require("./routes/user.routes")(app);
 
 app.use(cors())
 app.use(bodyParser.json())
@@ -95,8 +96,13 @@ app.get("/lyrics", async (req, res) => {
   res.json({ lyrics })
 })
 
-require("./rest-api/routes/user.routes")(app);
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument)
+);
 
+// set port, listen for requests
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);
