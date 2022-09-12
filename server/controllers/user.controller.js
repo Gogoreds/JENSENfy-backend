@@ -1,5 +1,6 @@
 const db = require("../models");
 const User = db.users;
+const md5 = require('md5');
 // const bcrypt = require('bcrypt');   need help with this one here, figuring out the salting
 // const saltRounds = 10;
 
