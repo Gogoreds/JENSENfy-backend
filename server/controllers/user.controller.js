@@ -1,8 +1,7 @@
 const db = require("../models");
 const User = db.users;
-const md5 = require('md5');
-// const bcrypt = require('bcrypt');   need help with this one here, figuring out the salting
-// const saltRounds = 10;
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -40,14 +39,14 @@ exports.create = (req, res) => {
     return;
   }
   // Create a User
-  // this part here is tricky. ~~abi
+
   // bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
   //   // Store hash in your password DB.
   // });
 
   const user = new User({
     userName: req.body.userName,
-    password: md5(req.body.password),
+    password: (req.body.password),
     published: req.body.published ? req.body.published : false
   });
   // Save User in the database
