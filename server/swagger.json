@@ -38,7 +38,7 @@
             "name": "user",
             "in": "body",
             "description": "User that we want to create",
-            "schema": {
+             "schema": {
               "$ref": "#/definitions/User"
             }
           }
@@ -49,7 +49,7 @@
         "responses": {
           "200": {
             "description": "New user is created",
-            "schema": {
+             "schema": {
               "$ref": "#/definitions/User"
             }
           }
@@ -89,10 +89,7 @@
         ],
         "responses": {
           "200": {
-            "description": "User is deleted",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
+            "description": "User is deleted"
           }
         }
       },
@@ -113,10 +110,7 @@
         ],
         "responses": {
           "200": {
-            "description": "User is updated",
-            "schema": {
-              "$ref": "#/definitions/User"
-            }
+            "description": "User is updated"
           }
         }
       }
@@ -125,76 +119,39 @@
   "definitions": {
     "User": {
       "required": [
-        "name",
-        "_id",
-        "companies"
+        "userName",
+        "password"
       ],
       "properties": {
-        "_id": {
-          "type": "string",
-          "uniqueItems": true
-        },
-        "isPublic": {
-          "type": "boolean"
-        },
-        "name": {
+
+        "userName": {
           "type": "string"
         },
-        "books": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              }
-            }
-          }
+        "password": {
+          "type": "string"
         },
-        "companies": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+
+        "isPublic": {
+          "type": "boolean"
         }
       }
     },
     "updateUser": {
       "required": [
-        "name",
-        "companies"
+        "userName",
+        "password"
       ],
-      "properties": {
-        "isPublic": {
-          "type": "boolean"
-        },
-        "name": {
+        "userName": {
           "type": "string"
         },
-        "books": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "amount": {
-                "type": "number"
-              }
-            }
-          }
+         "password": {
+          "type": "string"
         },
-        "companies": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+        
+        "isPublic": {
+          "type": "boolean"
         }
-      }
+
     },
     "Users": {
       "type": "array",
