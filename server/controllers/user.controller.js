@@ -1,7 +1,7 @@
 const db = require("../models");
 const User = db.users;
-// const bcrypt = require('bcrypt');
-// const saltRounds = 10;
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -40,17 +40,14 @@ exports.create = (req, res) => {
   }
   // Create a User
 
-  // bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
-  //   // Store hash in your password DB.
-  // });
-
-  const user = new User({
+  bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+    const user = new User({
     userName: req.body.userName,
-    password: (req.body.password),
+    password: hash,
     published: req.body.published ? req.body.published : false
   });
-  // Save User in the database
-  user
+
+    user
     .save(user)
     .then(data => {
       res.send(data);
@@ -60,6 +57,9 @@ exports.create = (req, res) => {
         message:
           err.message || "Some error occurred while creating the User."
       });
+
+  });
+
     });
 };
 
