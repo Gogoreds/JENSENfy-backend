@@ -1,7 +1,7 @@
 const db = require("../models");
 const User = db.users;
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
+// const bcrypt = require('bcrypt');
+// const saltRounds = 10;
 
 // Create and Save a new User
 exports.create = (req, res) => {
