@@ -4,9 +4,16 @@ require("dotenv").config()
 module.exports = mongoose => {
   var schema = new mongoose.Schema(
     {
-      userName: String,
-      password: String,
-      published: Boolean
+      userName: {
+        type: String,
+        required: [true, "Please provide a Username!"],
+        unique: [true, "Username Exist"],
+      },
+      password: {
+        type: String,
+        required: [true, "Please provide a password!"],
+        unique: false,
+      },
     },
     { timestamps: true }
   );

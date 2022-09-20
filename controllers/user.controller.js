@@ -2,6 +2,7 @@ const db = require("../models");
 const User = db.users;
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const jwt = require("jsonwebtoken");
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -42,25 +43,25 @@ exports.create = (req, res) => {
 
   bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
     const user = new User({
-    userName: req.body.userName,
-    password: hash,
-    published: req.body.published ? req.body.published : false
-  });
+      userName: req.body.userName,
+      password: hash,
+      published: req.body.published ? req.body.published : false
+    });
 
     user
-    .save(user)
-    .then(data => {
-      res.send(data);
-    })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while creating the User."
+      .save(user)
+      .then(data => {
+        res.send(data);
+      })
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while creating the User."
+        });
+
       });
 
   });
-
-    });
 };
 
 exports.findAll = (req, res) => {
@@ -90,6 +91,59 @@ exports.findOne = (req, res) => {
       res
         .status(500)
         .send({ message: "Error retrieving User with id=" + id });
+    });
+
+  // check if User exists
+  User.findOne({ userName: req.body.userName })
+
+    // if User exists
+    .then((user) => {
+      // compare the password entered and the hashed password found
+      bcrypt
+        .compare(req.body.password, user.password)
+
+        // if the passwords match
+        .then((passwordCheck) => {
+
+          // check if password matches
+          if (!passwordCheck) {
+            return response.status(400).send({
+              message: "Passwords does not match",
+              error,
+            });
+          }
+
+          //   create JWT token
+          const token = jwt.sign(
+            {
+              userId: user._id,
+              userName: user.userName,
+            },
+            "RANDOM-TOKEN",
+            { expiresIn: "24h" }
+          );
+
+          //   return success response
+          res.status(200).send({
+            message: "Login Successful",
+            userName: user.userName,
+            token,
+          });
+        })
+        // catch error if password do not match
+        .catch((error) => {
+          res.status(400).send({
+            message: "Passwords does not match",
+            error,
+          });
+        });
+    })
+    // catch error if User does not exist
+    .catch((e) => {
+      res.status(404).send({
+        message: "User not found",
+        e,
+      });
     });
 };
 
