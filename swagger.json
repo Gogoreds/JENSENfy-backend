@@ -129,10 +129,6 @@
         },
         "password": {
           "type": "string"
-        },
-
-        "isPublic": {
-          "type": "boolean"
         }
       }
     },
@@ -146,12 +142,8 @@
         },
          "password": {
           "type": "string"
-        },
-        
-        "isPublic": {
-          "type": "boolean"
         }
-
+        
     },
     "Users": {
       "type": "array",
