@@ -68,6 +68,8 @@ app.post("/refresh", (req, res) => {
     })
 })
 
+/// app.post("/authlog" or app.post("/login"
+
 app.post("/authlog", (req, res) => {
   const code = req.body.code
   const spotifyApi = new SpotifyWebApiNode({
