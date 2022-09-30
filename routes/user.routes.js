@@ -49,7 +49,7 @@ module.exports = app => {
   });
 
   //   Login user
-  router.post("/restlogin", (req, res) => {
+  router.post("/login", (req, res) => {
     // check if User exists
     User.findOne({ userName: req.body.userName })
       // if User exists
