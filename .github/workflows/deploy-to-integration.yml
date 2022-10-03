@@ -4,5 +4,7 @@ jobs:
   any-job:
     runs-on: ubuntu-latest
     steps:
+      - name: install
+        run: npm ci
       - name: integrationtest
         run: npm run integrationtest
