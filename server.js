@@ -7,12 +7,19 @@ const SpotifyWebApiNode = require("spotify-web-api-node");
 const app = express();
 const swaggerUi = require('swagger-ui-express'),
   swaggerDocument = require('./swagger.json');
+const credentials = require('./middleware/credentials');
+const corsOptions = require('./config/corsOptions');
 
-var corsOptions = {
-  origin: "http://localhost:3000"
-};
+
+
+app.use(credentials);
 
 app.use(cors(corsOptions));
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
+
+
 
 // parse requests of content-type - application/json
 app.use(express.json());
@@ -41,9 +48,6 @@ app.get("/", (req, res) => {
 
 require("./routes/user.routes")(app);
 
-app.use(cors())
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
 
 app.post("/Spotifyrefresh", (req, res) => {
   const refreshToken = req.body.refreshToken

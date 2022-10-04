@@ -2,9 +2,9 @@ const db = require("../models");
 const User = db.users;
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 const auth = require("../auth")
-
+const verifyJWT = require('../middleware/verifyJWT')
 
 
 module.exports = app => {
@@ -49,75 +49,77 @@ module.exports = app => {
       });
   });
 
+  router.post('/auth', auth.handleLogin);
+
   //   Login user
-  router.post("/login", (req, res) => {
-    // check if User exists
-    User.findOne({ userName: req.body.userName })
-      // if User exists
-      .then((user) => {
-        // compare the password entered and the hashed password found
-        bcrypt
-          .compare(req.body.password, user.password)
+  // router.post("/login", (req, res) => {
+  //   // check if User exists
+  //   User.findOne({ userName: req.body.userName })
+  //     // if User exists
+  //     .then((user) => {
+  //       // compare the password entered and the hashed password found
+  //       bcrypt
+  //         .compare(req.body.password, user.password)
 
-          // if the passwords match
-          .then((passwordCheck) => {
+  //         // if the passwords match
+  //         .then((passwordCheck) => {
 
-            // check if password matches
-            if (!passwordCheck) {
-              return response.status(400).send({
-                message: "Passwords does not match",
-                error,
-              });
-            }
+  //           // check if password matches
+  //           if (!passwordCheck) {
+  //             return response.status(400).send({
+  //               message: "Passwords does not match",
+  //               error,
+  //             });
+  //           }
 
-            //   create JWT token
-            const token = jwt.sign(
-              {
-                userId: user._id,
-                userName: user.userName,
-              },
-              "RANDOM-TOKEN",
-              { expiresIn: "24h" }
-            );
+  //           // //   create JWT token
+  //           // const token = jwt.sign(
+  //           //   {
+  //           //     userId: user._id,
+  //           //     userName: user.userName,
+  //           //   },
+  //           //   "RANDOM-TOKEN",
+  //           //   { expiresIn: "24h" }
+  //           // );
 
-            //   return success response
-            res.status(200).send({
-              message: "Login Successful",
-              userName: user.userName,
-              token,
-            });
-          })
-          // catch error if password do not match
-          .catch((error) => {
-            res.status(400).send({
-              message: "Passwords does not match",
-              error,
-            });
-          });
+  //           //   return success response
+  //           res.status(200).send({
+  //             message: "Login Successful",
+  //             userName: user.userName,
+  //             token,
+  //           });
+  //         })
+  //         // catch error if password do not match
+  //         .catch((error) => {
+  //           res.status(400).send({
+  //             message: "Passwords does not match",
+  //             error,
+  //           });
+  //         });
+  //     })
+  //     // catch error if User does not exist
+  //     .catch((e) => {
+  //       res.status(404).send({
+  //         message: "User not found",
+  //         e,
+  //       });
+  //     });
+
+  // Retrieve all users
+  router.get("/", verifyJWT, (req, res) => {
+    const userName = req.query.userName;
+    var condition = userName ? { userName: { $regex: new RegExp(userName), $options: "i" } } : {};
+    User.find(condition)
+      .then(data => {
+        res.send(data);
       })
-      // catch error if User does not exist
-      .catch((e) => {
-        res.status(404).send({
-          message: "User not found",
-          e,
+      .catch(err => {
+        res.status(500).send({
+          message:
+            err.message || "Some error occurred while retrieving the users."
         });
       });
-  },
-    // Retrieve all users
-    router.get("/", (req, res) => {
-      const userName = req.query.userName;
-      var condition = userName ? { userName: { $regex: new RegExp(userName), $options: "i" } } : {};
-      User.find(condition)
-        .then(data => {
-          res.send(data);
-        })
-        .catch(err => {
-          res.status(500).send({
-            message:
-              err.message || "Some error occurred while retrieving the users."
-          });
-        });
-    }));
+  });
   // Retrieve a single user with id
   router.get("/:id", (req, res) => {
     const id = req.params.id;
@@ -191,15 +193,15 @@ module.exports = app => {
         });
     })
 
-    // free endpoint
-app.get("/free-endpoint", (request, response) => {
-  response.json({ message: "You are free to access me anytime" });
-});
+    //     // free endpoint
+    // app.get("/free-endpoint", (request, response) => {
+    //   response.json({ message: "You are free to access me anytime" });
+    // });
 
-// authentication endpoint
-app.get("/auth-endpoint", auth, (request, response) => {
-  response.json({ message: "You are authorized to access me" });
-});
+    // // authentication endpoint
+    // app.get("/auth-endpoint", auth, (request, response) => {
+    //   response.json({ message: "You are authorized to access me" });
+    // });
 
   }
   )
