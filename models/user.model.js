@@ -14,6 +14,7 @@ module.exports = mongoose => {
         required: [true, "Please provide a password!"],
         unique: false,
       },
+      refreshToken: String
     },
     { timestamps: true }
   );
