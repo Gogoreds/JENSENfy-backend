@@ -5,6 +5,8 @@ const saltRounds = 10;
 // const jwt = require("jsonwebtoken");
 const auth = require("../auth")
 const verifyJWT = require('../middleware/verifyJWT')
+const logOut = require("../controllers/logoutController")
+const refreshTokenController = require('../controllers/refreshTokenController');
 
 
 module.exports = app => {
@@ -49,7 +51,10 @@ module.exports = app => {
       });
   });
 
+
+  // Login user rework
   router.post('/auth', auth.handleLogin);
+
 
   //   Login user
   // router.post("/login", (req, res) => {
@@ -105,8 +110,11 @@ module.exports = app => {
   //       });
   //     });
 
+  // Log out route
+  router.get('/logout', logOut.handleLogout);
+
   // Retrieve all users
-  router.get("/", verifyJWT, (req, res) => {
+  router.get("/", (req, res) => {
     const userName = req.query.userName;
     var condition = userName ? { userName: { $regex: new RegExp(userName), $options: "i" } } : {};
     User.find(condition)
@@ -120,6 +128,7 @@ module.exports = app => {
         });
       });
   });
+  router.get('/', refreshTokenController.handleRefreshToken);
   // Retrieve a single user with id
   router.get("/:id", (req, res) => {
     const id = req.params.id;
