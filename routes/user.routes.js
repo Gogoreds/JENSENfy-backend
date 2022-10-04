@@ -106,7 +106,7 @@ module.exports = app => {
   //     });
 
   // Retrieve all users
-  router.get("/", verifyJWT, (req, res) => {
+  router.get("/", (req, res) => {
     const userName = req.query.userName;
     var condition = userName ? { userName: { $regex: new RegExp(userName), $options: "i" } } : {};
     User.find(condition)
